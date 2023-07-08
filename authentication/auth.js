@@ -19,7 +19,10 @@ const SCOPES = [
   'https://www.googleapis.com/auth/gmail.labels',
 ];
 const TOKEN_PATH = path.join(process.cwd(), 'authentication/token.json');
-const CREDENTIALS_PATH = path.join(process.cwd(), 'authentication/credentials.json');
+const CREDENTIALS_PATH = path.join(
+  process.cwd(),
+  'authentication/credentials.json'
+);
 
 /**
  * Reads previously authorized credentials from the save file.

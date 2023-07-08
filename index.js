@@ -5,9 +5,6 @@ const {
   buildEmail,
 } = require('./utils/helper');
 const { google } = require('googleapis');
-/*
-API Documentation:- https://developers.google.com/gmail/api/reference/rest
- */
 
 async function getLabelId(gmail) {
   const res = await gmail.users.labels.list({
@@ -32,7 +29,6 @@ async function getLabelId(gmail) {
   }
 }
 
-//TODO: Customize your reply message
 async function sendReplyAndModifyLabel(gmail, threadId, replyMessage, labelId) {
   try {
     const emailContent = buildEmail(replyMessage);
@@ -45,7 +41,6 @@ async function sendReplyAndModifyLabel(gmail, threadId, replyMessage, labelId) {
       },
     });
 
-    console.log(response, '$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$');
     if (response) {
       console.log('Reply sent!');
       // Move the email to the "Vacation" label
@@ -68,6 +63,11 @@ async function sendReplyAndModifyLabel(gmail, threadId, replyMessage, labelId) {
 }
 
 async function mailAway(gmail) {
+  const userProfile = await gmail.users.getProfile({
+    userId: 'me',
+  });
+  const userEmailAddress = userProfile.data.emailAddress;
+
   const res = await gmail.users.messages.list({
     userId: 'me',
     q: 'is:inbox is:unread', //We use is:inbox to avoid spam/promotion mails which are unread
@@ -102,7 +102,8 @@ async function mailAway(gmail) {
     });
     const threadMessages = threadRes.data.messages;
 
-    if (checkIfAlreadyReplied(threadMessages) === false) {
+    if (checkIfAlreadyReplied(threadMessages, userEmailAddress) === false) {
+      console.log('Sending Reply!!');
       sendReplyAndModifyLabel(gmail, threadId, replyMessage, labelId);
     }
   }
@@ -111,10 +112,7 @@ async function mailAway(gmail) {
 async function intervalFunction(auth) {
   const gmail = google.gmail({ version: 'v1', auth });
   await mailAway(gmail, auth);
-  /** 
-  TODO: Change this to @getRandomInterval
-  */
-  setTimeout(() => intervalFunction(auth), 5000);
+  setTimeout(() => intervalFunction(auth), getRandomInterval);
 }
 
 authorize()

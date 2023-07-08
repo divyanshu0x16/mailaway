@@ -18,14 +18,11 @@ function buildEmail(message) {
   return encodedEmailContent;
 }
 
-function checkIfAlreadyReplied(threadMessages) {
+function checkIfAlreadyReplied(threadMessages, userEmailAddress) {
   let sentByYou = false;
   for (const message of threadMessages) {
     for (const header of message.payload.headers) {
-      if (
-        header.name === 'From' &&
-        header.value.includes('divyanshu22.dm@gmail.com') //TODO: Remove this hard code
-      ) {
+      if (header.name === 'From' && header.value.includes(userEmailAddress)) {
         sentByYou = true;
         break;
       }
