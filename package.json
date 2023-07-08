@@ -1,0 +1,22 @@
+{
+  "name": "mailaway",
+  "version": "1.0.0",
+  "description": "A Node.js based app that is able to respond to emails sent to your GMail mailbox while you are out on a vacation",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/divyanshu0x16/mailaway.git"
+  },
+  "keywords": [
+    "node.js"
+  ],
+  "author": "divyanshu0x16",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/divyanshu0x16/mailaway/issues"
+  },
+  "homepage": "https://github.com/divyanshu0x16/mailaway#readme"
+}
