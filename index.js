@@ -1,18 +1,24 @@
 const { authorize } = require('./authentication/auth');
-const { getRandomInterval, checkIfAlreadyReplied } = require('./utils/helper');
+const {
+  getRandomInterval,
+  checkIfAlreadyReplied,
+  buildEmail,
+} = require('./utils/helper');
 const { google } = require('googleapis');
 /*
 API Documentation:- https://developers.google.com/gmail/api/reference/rest
  */
 
-async function createLabel(gmail) {
+async function getLabelId(gmail) {
   const res = await gmail.users.labels.list({
     userId: 'me',
   });
   const labels = res.data.labels;
-  const hasVacation = labels.some((label) => label.name.includes('Vacation'));
-  if (!hasVacation) {
-    await gmail.users.labels.create({
+  const vacationLabel = labels.find((label) => label.name === 'Vacation');
+  if (vacationLabel) {
+    return vacationLabel.id;
+  } else {
+    const createdLabel = await gmail.users.labels.create({
       userId: 'me',
       requestBody: {
         labelListVisibility: 'labelShow',
@@ -22,27 +28,20 @@ async function createLabel(gmail) {
     });
 
     console.log("Created label with name 'Vacation'");
-  } else {
-    console.log("Label with name 'Vacation' already existed");
+    return createdLabel.data.id;
   }
 }
 
 //TODO: Customize your reply message
-async function sendReplyAndModifyLabel(gmail, threadId, threadRes) {
+async function sendReplyAndModifyLabel(gmail, threadId, replyMessage, labelId) {
   try {
-    console.log(threadRes.data);
-
-    const messageContent =
-      'The user is on vacation and may take some time to respond. Please wait for the response.';
-    const encodedMessageContent =
-      Buffer.from(messageContent).toString('base64');
-
-    dsafaf;
+    const emailContent = buildEmail(replyMessage);
 
     const response = await gmail.users.messages.send({
       userId: 'me',
       requestBody: {
-        raw: encodedMessageContent,
+        threadId: threadId,
+        raw: emailContent,
       },
     });
 
@@ -54,7 +53,7 @@ async function sendReplyAndModifyLabel(gmail, threadId, threadRes) {
         userId: 'me',
         id: threadId,
         requestBody: {
-          addLabelIds: ['Vacation'],
+          addLabelIds: [labelId],
         },
       });
       console.log('Email thread moved to the "Vacation" label.');
@@ -88,7 +87,14 @@ async function mailAway(gmail) {
 
     console.log(`Email from: ${fromHeader.value}`);
     console.log(`Subject: ${subjectHeader.value}`);
-    console.log(`Thread ID: ${threadId}`);
+
+    const replyMessage = {
+      to: fromHeader.value,
+      subject: subjectHeader.value,
+      body: 'The person you are trying to reach is currently on a vacation. Please wait for some time for response.',
+    };
+
+    const labelId = await getLabelId(gmail); //Get the ID of the Label with name 'Vacation'
 
     const threadRes = await gmail.users.threads.get({
       userId: 'me',
@@ -97,15 +103,13 @@ async function mailAway(gmail) {
     const threadMessages = threadRes.data.messages;
 
     if (checkIfAlreadyReplied(threadMessages) === false) {
-      console.log('Send a reply!');
-      //sendReplyAndModifyLabel(gmail, threadId, threadRes);
+      sendReplyAndModifyLabel(gmail, threadId, replyMessage, labelId);
     }
   }
 }
 
 async function intervalFunction(auth) {
   const gmail = google.gmail({ version: 'v1', auth });
-  await createLabel(gmail, auth);
   await mailAway(gmail, auth);
   /** 
   TODO: Change this to @getRandomInterval
