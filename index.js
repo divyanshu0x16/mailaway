@@ -1,10 +1,7 @@
 const { authorize } = require('./authentication/auth');
+const { getRandomInterval } = require('./utils/helper');
 const { google } = require('googleapis');
 
-/*
- * Lists the labels in the user's account.
- * @param {google.auth.OAuth2} auth An authorized OAuth2 client.
- */
 async function listLabels(auth) {
   const gmail = google.gmail({ version: 'v1', auth });
   const res = await gmail.users.labels.list({
@@ -21,4 +18,14 @@ async function listLabels(auth) {
   });
 }
 
-authorize().then(listLabels).catch(console.error);
+async function intervalFunction(auth) {
+  await listLabels(auth);
+  setTimeout(() => intervalFunction(auth), getRandomInterval());
+}
+
+authorize()
+  .then((client) => {
+    // If authorization is successful, start calling logic function every X seconds
+    intervalFunction(client);
+  })
+  .catch(console.error);
