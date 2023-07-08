@@ -60,7 +60,7 @@ async function mailAway(gmail) {
 async function intervalFunction(auth) {
   const gmail = google.gmail({ version: 'v1', auth });
   await mailAway(gmail, auth);
-  setTimeout(() => intervalFunction(auth), getRandomInterval);
+  setTimeout(() => intervalFunction(auth), getRandomInterval());
 }
 
 authorize()
