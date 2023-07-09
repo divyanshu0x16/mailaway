@@ -5,6 +5,7 @@ function getRandomInterval() {
 function buildEmail(message) {
   const headers = [
     `To: ${message.to}`,
+    `From: ${message.from}`,
     'Content-Type: text/plain; charset=utf-8',
     `Subject: ${message.subject}`,
   ];

@@ -34,14 +34,17 @@ async function mailAway(gmail) {
     const threadId = emailData.data.threadId;
     const headers = emailData.data.payload.headers;
     const fromHeader = headers.find((header) => header.name === 'From');
+    const toHeader = headers.find((header) => header.name === 'To');
     const subjectHeader = headers.find((header) => header.name === 'Subject'); //Needed for sending a response and keeping the thread same
 
     console.log(`Email from: ${fromHeader.value}`);
     console.log(`Subject: ${subjectHeader.value}`);
 
+    //Here the receiver will become sender
     const replyMessage = {
       to: fromHeader.value,
       subject: subjectHeader.value,
+      from: toHeader.value,
       body: 'The person you are trying to reach is currently on a vacation. Please wait for some time for response.',
     };
 
