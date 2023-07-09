@@ -54,7 +54,7 @@ async function mailAway(gmail) {
 
     if (checkIfAlreadyReplied(threadMessages, userEmailAddress) === false) {
       console.log('Sending Reply!!');
-      sendReplyAndAddLabel(gmail, threadId, replyMessage, labelId);
+      await sendReplyAndAddLabel(gmail, threadId, replyMessage, labelId);
     } else {
       console.log(`Already sent a reply.`);
     }
