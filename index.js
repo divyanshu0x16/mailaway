@@ -11,7 +11,8 @@ async function mailAway(gmail) {
   });
   const userEmailAddress = userProfile.data.emailAddress;
 
-  const labelId = await getLabelId(gmail); //Get the ID of the Label with name 'Vacation'
+  //Get the ID of the Label with name 'Vacation'. If it does not exist, we create one.
+  const labelId = await getLabelId(gmail);
 
   const res = await gmail.users.messages.list({
     userId: 'me',
@@ -44,6 +45,7 @@ async function mailAway(gmail) {
       body: 'The person you are trying to reach is currently on a vacation. Please wait for some time for response.',
     };
 
+    //To check whether user has already a send a reply in this thread or not
     const threadRes = await gmail.users.threads.get({
       userId: 'me',
       id: threadId,

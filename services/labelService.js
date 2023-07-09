@@ -4,6 +4,7 @@ async function getLabelId(gmail) {
   });
   const labels = res.data.labels;
   const vacationLabel = labels.find((label) => label.name === 'Vacation');
+
   if (vacationLabel) {
     return vacationLabel.id;
   } else {
