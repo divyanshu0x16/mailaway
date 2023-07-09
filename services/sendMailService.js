@@ -22,7 +22,7 @@ async function sendReplyAndAddLabel(gmail, threadId, replyMessage, labelId) {
           addLabelIds: [labelId],
         },
       });
-      console.log('Email thread moved to the "Vacation" label.');
+      console.log('Added "Vacation" label to the thread.');
     } else {
       console.error(
         'Error sending reply. Response is null, undefined, or falsy.'
