@@ -61,14 +61,19 @@ async function mailAway(gmail) {
   }
 }
 
-async function intervalFunction(auth) {
-  const gmail = google.gmail({ version: 'v1', auth });
-  await mailAway(gmail, auth);
-  setTimeout(() => intervalFunction(auth), getRandomInterval());
+async function intervalFunction(gmail) {
+  try {
+    await mailAway(gmail);
+  } catch (error) {
+    console.error('Error occurred while processing emails:', error);
+  }
+
+  setTimeout(() => intervalFunction(gmail), getRandomInterval());
 }
 
 authorize()
   .then((client) => {
-    intervalFunction(client);
+    const gmail = google.gmail({ version: 'v1', auth: client });
+    intervalFunction(gmail);
   })
   .catch(console.error);
