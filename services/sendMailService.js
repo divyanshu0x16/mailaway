@@ -1,6 +1,6 @@
 const { buildEmail } = require('../utils/helper');
 
-async function sendReplyAndModifyLabel(gmail, threadId, replyMessage, labelId) {
+async function sendReplyAndAddLabel(gmail, threadId, replyMessage, labelId) {
   try {
     const emailContent = buildEmail(replyMessage);
 
@@ -34,5 +34,5 @@ async function sendReplyAndModifyLabel(gmail, threadId, replyMessage, labelId) {
 }
 
 module.exports = {
-  sendReplyAndModifyLabel,
+  sendReplyAndAddLabel,
 };

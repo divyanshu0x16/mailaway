@@ -1,7 +1,7 @@
 const { google } = require('googleapis');
 const { authorize } = require('./authentication/auth');
 const { getLabelId } = require('./services/labelService');
-const { sendReplyAndModifyLabel } = require('./services/sendMailService');
+const { sendReplyAndAddLabel } = require('./services/sendMailService');
 
 const { getRandomInterval, checkIfAlreadyReplied } = require('./utils/helper');
 
@@ -52,7 +52,9 @@ async function mailAway(gmail) {
 
     if (checkIfAlreadyReplied(threadMessages, userEmailAddress) === false) {
       console.log('Sending Reply!!');
-      sendReplyAndModifyLabel(gmail, threadId, replyMessage, labelId);
+      sendReplyAndAddLabel(gmail, threadId, replyMessage, labelId);
+    } else {
+      console.log(`Already sent a reply.`);
     }
   }
 }
