@@ -2,7 +2,7 @@ const { buildEmail } = require('../utils/helper');
 
 async function sendReplyAndAddLabel(gmail, threadId, replyMessage, labelId) {
   try {
-    const emailContent = buildEmail(replyMessage);
+    const emailContent = buildEmail(replyMessage, threadId);
 
     const response = await gmail.users.messages.send({
       userId: 'me',

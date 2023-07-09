@@ -2,10 +2,12 @@ function getRandomInterval() {
   return Math.floor(Math.random() * (120 - 45 + 1) + 45) * 1000; // Convert to milliseconds
 }
 
-function buildEmail(message) {
+function buildEmail(message, threadId) {
   const headers = [
     `To: ${message.to}`,
     `From: ${message.from}`,
+    `In-Reply-To: ${threadId}`,
+    `References: ${threadId}`,
     'Content-Type: text/plain; charset=utf-8',
     `Subject: ${message.subject}`,
   ];
